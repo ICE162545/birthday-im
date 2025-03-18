@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S Login</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        /* Particle Background */
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 5s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateY(-200px) translateX(200px);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.5;
+            }
+        }
+        /* Arc Reactor */
+        .arc-reactor {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.3), rgba(0, 255, 255, 0));
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: pulse 2s infinite alternate;
+        }
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0.2;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.4;
+            }
+        }
+        /* Login Container */
+        .login-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 40px;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            animation: glow-border 2s infinite alternate;
+        }
+        @keyframes glow-border {
+            0% {
+                border-color: #00ffff;
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            }
+            100% {
+                border-color: #00bfff;
+                box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+            }
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            background: transparent;
+            color: #00ffff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 1.2rem;
+            color: #000;
+            background: #00ffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #00bfff;
+        }
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            flex-direction: column;
+        }
+        .progress-bar-container {
+            width: 80%;
+            max-width: 400px;
+            height: 20px;
+            background: rgba(0, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: #00ffff;
+            transition: width 0.3s ease;
+        }
+        .loading-text {
+            font-size: 2rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000, #000033, #000);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            flex-direction: column;
+        }
+        .hbd-message {
+            font-size: 1.5rem;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .hbd-message p {
+            margin: 5px 0;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeIn 2s ease-in-out forwards;
+        }
+        .hbd-message strong {
+            font-size: 2rem;
+            color: #ff4500;
+            text-shadow: 0 0 15px rgba(255, 69, 0, 0.8);
+        }
+        /* Happy Birthday Text Decoration */
+        .birthday-text {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff4500;
+            text-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
+            animation: neon-glow 2s infinite alternate;
+        }
+        @keyframes neon-glow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 69, 0, 0.8), 0 0 20px rgba(255, 69, 0, 0.8);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 40px rgba(255, 69, 0, 1);
+            }
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+            input {
+                font-size: 0.9rem;
+            }
+            button {
+                font-size: 1rem;
+            }
+            .loading-text {
+                font-size: 1.5rem;
+            }
+            .hbd-message {
+                font-size: 1rem;
+            }
+            .birthday-text {
+                font-size: 2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px;
+            }
+            input {
+                padding: 8px;
+            }
+            button {
+                padding: 8px;
+            }
+            .hbd-message {
+                font-size: 0.9rem;
+            }
+            .birthday-text {
+                font-size: 1.5rem;
+            }
+        }
+        /* Animation for HBD Message */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Image Carousel */
+        .image-carousel {
+            margin-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .celebration-image {
+            max-width: 80%; /* เพิ่มขนาดของรูปภาพ */
+            height: auto; /* รักษาอัตราส่วนเดิม */
+            border-radius: 15px; /* เพิ่มขอบมน */
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8); /* เพิ่มเงา */
+            transition: transform 0.5s ease-in-out; /* เพิ่มเอฟเฟกต์ hover */
+        }
+        .celebration-image:hover {
+            transform: scale(1.1); /* ขยายรูปภาพเมื่อ hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles"></div>
+    <!-- Arc Reactor -->
+    <div class="arc-reactor"></div>
+    <!-- Rotating Globe -->
+    <div class="globe"></div>
+    <!-- Login Form -->
+    <div id="loginContainer" class="login-container">
+        <h2>J.A.R.V.I.S LOGIN</h2>
+        <div class="input-group">
+            <input type="text" id="username" placeholder="Username" required>
+        </div>
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Password" required>
+        </div>
+        <button id="loginButton">Access System</button>
+    </div>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div class="loading-text">SYSTEM LOADING...</div>
+    </div>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="welcome-screen" style="display: none;">
+        <div class="hbd-message">
+            <p>ACCESS GRANTED</p>
+            <p>WELCOME TO J.A.R.V.I.S INTERFACE</p>
+            <p>SYSTEM STATUS: ONLINE</p>
+            <br>
+            <p>HAPPY BIRTHDAY COMMANDER!</p>
+            <p>MAY YOUR DAY BE FILLED WITH JOY AND SUCCESS</p>
+            <br>
+            <p><strong>ENJOY THE CELEBRATION! 🎂🥳💝</strong></p>
+        </div>
+        <div class="birthday-text">
+            HAPPY BIRTHDAY!
+        </div>
+        <!-- Image Carousel -->
+        <div class="image-carousel">
+            <img id="slideshowImage" src="" alt="Celebration Image" class="celebration-image">
+        </div>
+    </div>
+    <script>
+        // Generate Particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.top = `${Math.random() * 100}vh`;
+            particle.style.left = `${Math.random() * 100}vw`;
+            particle.style.animationDuration = `${Math.random() * 5 + 3}s`;
+            particle.style.opacity = Math.random();
+            particlesContainer.appendChild(particle);
+        }
+        // Login Logic
+        const loginButton = document.getElementById('loginButton');
+        const loginContainer = document.getElementById('loginContainer');
+        const loadingScreen = document.getElementById('loadingScreen');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const progressBar = document.getElementById('progressBar');
+        loginButton.addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === 'admin' && password === '1234') {
+                loginContainer.style.display = 'none';
+                loadingScreen.style.display = 'flex';
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 10;
+                    progressBar.style.width = `${progress}%`;
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            welcomeScreen.style.display = 'flex';
+                            startSlideshow(); // เริ่มต้นสไลด์โชว์เมื่อเข้า Welcome Screen
+                        }, 500); 
+                    }
+                }, 300); 
+            } else {
+                alert('Invalid Username or Password!');
+            }
+        });
+
+        // Slideshow Logic
+        const images = [
+            "https://i.postimg.cc/r0RSh1mX/424-E56-E3-D7-D9-4926-8724-58-C38-A8-F1621.jpg", // รูปภาพเดิม
+            "https://i.postimg.cc/PxwYB4f9/5428-DDC2-0-B0-B-4-D4-C-A604-B2310-EFF8130.jpg" // รูปภาพใหม่ที่คุณให้มา
+        ];
+        let currentIndex = 0;
+
+        function changeImage() {
+            const slideshowImage = document.getElementById("slideshowImage");
+            currentIndex = (currentIndex + 1) % images.length; // เปลี่ยนดัชนีภาพถัดไป
+            slideshowImage.style.opacity = 0;
+
+            setTimeout(() => {
+                slideshowImage.src = images[currentIndex];
+                slideshowImage.style.opacity = 1;
+            }, 500);
+        }
+
+        function startSlideshow() {
+            const slideshowImage = document.getElementById("slideshowImage");
+            slideshowImage.src = images[currentIndex];
+            slideshowImage.style.opacity = 1;
+            setInterval(changeImage, 5000); // เปลี่ยนรูปภาพทุก 5 วินาที
+        }
+    </script>
+</body>
+</html>
